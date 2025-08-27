@@ -1,7 +1,15 @@
+'use client'
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 
 export default function Home() {
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
   return (
     <main>
       <div>
