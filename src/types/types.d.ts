@@ -1,6 +1,6 @@
 import { Emoji } from "emojibase"
 
-type QuestionType = "lang" | "flag" | "name";
+type TypeOfQuestion = "lang" | "name" | "flag"
 
 export interface ICountry {
     name: string
@@ -9,18 +9,17 @@ export interface ICountry {
 }
 
 export interface IQuiz {
-    questions: Array<IQuestion>
-    score: number
-    getCountries: () => void
+    getCountries: () => Promise<ICountry[]>
+    createQuiz: (countries: ICountry[]) => Array<IQuestion>
 }
 
 export interface IQuestion {
     question: string
-    type: string
+    type: TypeOfQuestion
     answers: Array<IAnswer>
     correctAnswer: IAnswer
 }
 
-export interface IAnswer {
+export interface IAnswer extends ICountry {
     answer: string
 }
