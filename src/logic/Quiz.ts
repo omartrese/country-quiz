@@ -30,9 +30,9 @@ class Quiz implements IQuiz {
 
     createQuiz = (countries: ICountry[]): IQuestion[] => {
         let questions: Array<IQuestion> = [];
-        let countryQuestion: ICountry;
-        let newQuestionType: TypeOfQuestion;
-        let newCorrectAnswer: IAnswer;
+        let countryQuestion: ICountry; //country that will be used as the question topic
+        let newQuestionType: TypeOfQuestion; //type of question between guessing lang, name or flag
+        let newCorrectAnswer: IAnswer; // correct answer = countryQuestion
         const questionTypes = ["lang", "name", "flag"];
 
         for (let i = 0; i < 10; i++) {
@@ -41,12 +41,12 @@ class Quiz implements IQuiz {
 
             newQuestionType = questionTypes[Math.floor(Math.random() * questionTypes.length)] as TypeOfQuestion;
 
-            newCorrectAnswer = countryToAnswer(countryQuestion); 
+            newCorrectAnswer = countryToAnswer(countryQuestion, newQuestionType); 
 
             questions.push({
                 question: generateQuestion(newQuestionType, countryQuestion),
                 type: newQuestionType,
-                answers: generateAnswers(newCorrectAnswer, countries),
+                answers: generateAnswers(newQuestionType, newCorrectAnswer, countries),
                 correctAnswer: newCorrectAnswer 
             })
         }

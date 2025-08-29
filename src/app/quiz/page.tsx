@@ -1,23 +1,48 @@
 'use client'
 
-import { useEffect } from "react"
-import Quiz from "../../logic/Quiz"
+import { memo } from 'react'
+import Question from '@/components/Question'
+import { QuizLoading, QuizComplete, QuizProgress } from '@/components/QuizStates'
+import { useQuiz } from '@/hooks/useQuiz'
 
+function QuizPage() {
+    const {
+        questions,
+        currentQuestionIndex,
+        score,
+        isLoading,
+        isFinished,
+        resetQuiz,
+        handleAnswer
+    } = useQuiz()
 
-export default function QuizPage() {
+    if (isLoading) {
+        return <QuizLoading />
+    }
 
-    const newQuiz = new Quiz()
-    let countries;
-    let questions;
+    if (isFinished) {
+        return (
+            <QuizComplete 
+                score={score} 
+                totalQuestions={questions.length} 
+                onRetry={resetQuiz} 
+            />
+        )
+    }
 
-    useEffect(() => {
-        const fetchQuiz = async () => {
-            countries = await newQuiz.getCountries();
-            questions = newQuiz.createQuiz(countries);
-            console.log(questions);
-        };
-        fetchQuiz();
-    }, [])
-
-    return <h1>esto es el quiz</h1>
+    return (
+        <div className="min-h-screen p-6">
+            <QuizProgress 
+                current={currentQuestionIndex}
+                total={questions.length}
+                score={score}
+            />
+            <Question 
+                question={questions[currentQuestionIndex]} 
+                onAnswer={handleAnswer}
+            />
+        </div>
+    )
 }
+
+export default memo(QuizPage)

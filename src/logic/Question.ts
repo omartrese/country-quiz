@@ -26,22 +26,38 @@ export function generateQuestion(questionType: TypeOfQuestion, countryToQuestion
     return result;
 }
 
+function shuffleArray<T>(array: T[]): T[] {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
 /**
- * Generate a new question for the quiz
+ * Generate a question's answers for the quiz
  * @param  {IAnswer} correctAnswer Needed to know which one of the 4 generated answers is correct.
  * @param  {ICountry} countryToQuestion The country needed to know the question's answer
  * @return {string} The question text for the IQuestion.
  */
-export function generateAnswers(correctAnswer: IAnswer, countries: ICountry[]): IAnswer[] {
-
-    const wrongAnswers: IAnswer[] = []
+export function generateAnswers(questionType: TypeOfQuestion, correctAnswer: IAnswer, countries: ICountry[]): IAnswer[] {
+    const wrongAnswers: IAnswer[] = [];
+    const usedAnswers = new Set([correctAnswer.answer]);
 
     for (let i = 0; i < 3; i++) {
         let generatedCountry: ICountry = countries[Math.floor(Math.random() * countries.length)];
-        while (!generatedCountry || countryToAnswer(generatedCountry) === correctAnswer) {
+        let answer = countryToAnswer(generatedCountry, questionType);
+
+        // Make sure we don't use the same answer twice and it's not the correct answer
+        while (!generatedCountry || usedAnswers.has(answer.answer)) {
             generatedCountry = countries[Math.floor(Math.random() * countries.length)];
+            answer = countryToAnswer(generatedCountry, questionType);
         }
-        wrongAnswers.push(countryToAnswer(generatedCountry));
+        
+        usedAnswers.add(answer.answer);
+        wrongAnswers.push(answer);
     }
-    return [correctAnswer, ...wrongAnswers];
+    
+    // Combine and shuffle all answers
+    return shuffleArray([correctAnswer, ...wrongAnswers]);
 }

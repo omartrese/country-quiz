@@ -21,5 +21,6 @@ export interface IQuestion {
 }
 
 export interface IAnswer extends ICountry {
-    answer: string
+    answer: string | Emoji
+    showFlag?: boolean
 }
